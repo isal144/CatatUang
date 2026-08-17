@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect
 import sqlite3
 from datetime import date, timedelta
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=".")
 DATABASE = "database.db"
 
 
