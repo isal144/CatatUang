@@ -2,366 +2,316 @@
 <html lang="id">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CatatUang</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
+        body {
+            background-color: #f4f5f7;
+            color: #172b4d;
+            padding: 16px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* Banner Header */
+        .header-card {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 24px 20px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .header-card h1 {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .header-card p {
+            font-size: 14px;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        /* Card Ringkasan */
+        .summary-card {
+            background: #ffffff;
+            padding: 18px 20px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .summary-card .label {
+            font-size: 13px;
+            color: #5e6c84;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .summary-card .value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #091e42;
+        }
+
+        /* Card Section (Form, Filter, Data) */
+        .card-section {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #091e42;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #091e42;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #dfe1e6;
+            background-color: #f4f5f7;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #091e42;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            background-color: #ffffff;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Table Style */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #dfe1e6;
+        }
+
+        th {
+            background-color: #f4f5f7;
+            font-weight: 700;
+        }
+
+        a.delete-btn {
+            color: #de350b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>💰 CatatUang</h1>
-
-    <p>
-        Catat dan pantau pengeluaranmu.
-    </p>
-
-    <hr>
-
-
-    <h2>Ringkasan Pengeluaran</h2>
-
-
-    <p>
-        Hari Ini:
-        <strong>
-            Rp{{ "{:,}".format(total_hari).replace(",", ".") }}
-        </strong>
-    </p>
-
-
-    <p>
-        Minggu Ini:
-        <strong>
-            Rp{{ "{:,}".format(total_minggu).replace(",", ".") }}
-        </strong>
-    </p>
-
-
-    <p>
-        Bulan Ini:
-        <strong>
-            Rp{{ "{:,}".format(total_bulan).replace(",", ".") }}
-        </strong>
-    </p>
-
-
-    <p>
-        Tahun Ini:
-        <strong>
-            Rp{{ "{:,}".format(total_tahun).replace(",", ".") }}
-        </strong>
-    </p>
-
-
-    <hr>
-
-
-    <h2>Tambah Pengeluaran</h2>
-
-
-    <form action="/tambah" method="POST">
-
-
-        <label>
-            Nama Pengeluaran
-        </label>
-
-        <br>
-
-        <input
-            type="text"
-            name="nama"
-            placeholder="Contoh: Makan siang"
-            required
-        >
-
-        <br>
-        <br>
-
-
-        <label>
-            Nominal
-        </label>
-
-        <br>
-
-        <input
-            type="number"
-            name="nominal"
-            placeholder="Contoh: 15000"
-            min="1"
-            required
-        >
-
-        <br>
-        <br>
-
-
-        <label>
-            Kategori
-        </label>
-
-        <br>
-
-        <select name="kategori" required>
-
-            <option value="Makanan">
-                Makanan
-            </option>
-
-            <option value="Transportasi">
-                Transportasi
-            </option>
-
-            <option value="Pendidikan">
-                Pendidikan
-            </option>
-
-            <option value="Hiburan">
-                Hiburan
-            </option>
-
-            <option value="Kebutuhan">
-                Kebutuhan
-            </option>
-
-            <option value="Lainnya">
-                Lainnya
-            </option>
-
-        </select>
-
-        <br>
-        <br>
-
-
-        <label>
-            Tanggal
-        </label>
-
-        <br>
-
-        <input
-            type="date"
-            name="tanggal"
-            required
-        >
-
-        <br>
-        <br>
-
-
-        <label>
-            Keterangan
-        </label>
-
-        <br>
-
-        <textarea
-            name="keterangan"
-            placeholder="Keterangan tambahan"
-        ></textarea>
-
-        <br>
-        <br>
-
-
-        <button type="submit">
-            + Tambah Pengeluaran
-        </button>
-
-
-    </form>
-
-
-    <hr>
-
-
-    <h2>Filter Pengeluaran</h2>
-
-
-    <form method="GET">
-
-
-        <label>
-            Periode
-        </label>
-
-        <br>
-
-        <select name="periode">
-
-            <option value="semua">
-                Semua
-            </option>
-
-            <option value="hari">
-                Hari Ini
-            </option>
-
-            <option value="minggu">
-                Minggu Ini
-            </option>
-
-            <option value="bulan">
-                Bulan Ini
-            </option>
-
-            <option value="tahun">
-                Tahun Ini
-            </option>
-
-        </select>
-
-
-        <br>
-        <br>
-
-
-        <label>
-            Kategori
-        </label>
-
-        <br>
-
-        <select name="kategori">
-
-            <option value="Semua">
-                Semua
-            </option>
-
-            <option value="Makanan">
-                Makanan
-            </option>
-
-            <option value="Transportasi">
-                Transportasi
-            </option>
-
-            <option value="Pendidikan">
-                Pendidikan
-            </option>
-
-            <option value="Hiburan">
-                Hiburan
-            </option>
-
-            <option value="Kebutuhan">
-                Kebutuhan
-            </option>
-
-            <option value="Lainnya">
-                Lainnya
-            </option>
-
-        </select>
-
-
-        <br>
-        <br>
-
-
-        <button type="submit">
-            Tampilkan
-        </button>
-
-
-    </form>
-
-
-    <hr>
-
-
-    <h2>Daftar Pengeluaran</h2>
-
-
-    {% if data %}
-
-
-    <table border="1" cellpadding="8">
-
-        <tr>
-
-            <th>Tanggal</th>
-
-            <th>Pengeluaran</th>
-
-            <th>Kategori</th>
-
-            <th>Nominal</th>
-
-            <th>Keterangan</th>
-
-            <th>Aksi</th>
-
-        </tr>
-
-
-        {% for item in data %}
-
-
-        <tr>
-
-            <td>
-                {{ item[4] }}
-            </td>
-
-
-            <td>
-                {{ item[1] }}
-            </td>
-
-
-            <td>
-                {{ item[3] }}
-            </td>
-
-
-            <td>
-                Rp{{ "{:,}".format(item[2]).replace(",", ".") }}
-            </td>
-
-
-            <td>
-                {{ item[5] }}
-            </td>
-
-
-            <td>
-
-                <a
-                    href="/hapus/{{ item[0] }}"
-                    onclick="return confirm('Hapus pengeluaran ini?')"
-                >
-                    Hapus
-                </a>
-
-            </td>
-
-        </tr>
-
-
-        {% endfor %}
-
-
-    </table>
-
-
-    {% else %}
-
-
-    <p>
-        Belum ada pengeluaran.
-    </p>
-
-
-    {% endif %}
-
+    <div class="header-card">
+        <h1>💰 CatatUang</h1>
+        <p>Catat dan pantau pengeluaran sehari-hari dengan mudah.</p>
+    </div>
+
+    <div class="summary-card">
+        <div class="label">Pengeluaran Hari Ini</div>
+        <div class="value">
+            Rp{% if total_hari %}{{ "{:,}".format(total_hari).replace(",", ".") }}{% else %}0{% endif %}
+        </div>
+    </div>
+
+    <div class="summary-card">
+        <div class="label">Pengeluaran Minggu Ini</div>
+        <div class="value">
+            Rp{% if total_minggu %}{{ "{:,}".format(total_minggu).replace(",", ".") }}{% else %}0{% endif %}
+        </div>
+    </div>
+
+    <div class="summary-card">
+        <div class="label">Pengeluaran Bulan Ini</div>
+        <div class="value">
+            Rp{% if total_bulan %}{{ "{:,}".format(total_bulan).replace(",", ".") }}{% else %}0{% endif %}
+        </div>
+    </div>
+
+    <div class="summary-card">
+        <div class="label">Pengeluaran Tahun Ini</div>
+        <div class="value">
+            Rp{% if total_tahun %}{{ "{:,}".format(total_tahun).replace(",", ".") }}{% else %}0{% endif %}
+        </div>
+    </div>
+
+    <div class="card-section">
+        <h2>Tambah Pengeluaran</h2>
+
+        <form action="/tambah" method="POST">
+
+            <div class="form-group">
+                <label>Tanggal</label>
+                <input type="date" name="tanggal" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>Keterangan / Nama Pengeluaran</label>
+                <input type="text" name="nama" class="form-control" placeholder="Contoh: Makan siang" required>
+            </div>
+
+            <div class="form-group">
+                <label>Kategori</label>
+                <select name="kategori" class="form-control" required>
+                    <option value="" disabled selected>-- Pilih kategori --</option>
+                    <option value="Makanan">Makanan</option>
+                    <option value="Transportasi">Transportasi</option>
+                    <option value="Pendidikan">Pendidikan</option>
+                    <option value="Hiburan">Hiburan</option>
+                    <option value="Kebutuhan">Kebutuhan</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Jumlah Pengeluaran (Rp)</label>
+                <input type="number" name="nominal" class="form-control" placeholder="Contoh: 15000" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label>Catatan Tambahan</label>
+                <textarea name="keterangan" class="form-control" placeholder="Keterangan tambahan"></textarea>
+            </div>
+
+            <button type="submit">+ Tambah Pengeluaran</button>
+
+        </form>
+    </div>
+
+    <div class="card-section">
+        <h2>Filter Pengeluaran</h2>
+
+        <form method="GET">
+
+            <div class="form-group">
+                <label>Periode</label>
+                <select name="periode" class="form-control">
+                    <option value="semua">Semua</option>
+                    <option value="hari">Hari Ini</option>
+                    <option value="minggu">Minggu Ini</option>
+                    <option value="bulan">Bulan Ini</option>
+                    <option value="tahun">Tahun Ini</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Kategori</label>
+                <select name="kategori" class="form-control">
+                    <option value="Semua">Semua</option>
+                    <option value="Makanan">Makanan</option>
+                    <option value="Transportasi">Transportasi</option>
+                    <option value="Pendidikan">Pendidikan</option>
+                    <option value="Hiburan">Hiburan</option>
+                    <option value="Kebutuhan">Kebutuhan</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+
+            <button type="submit">Tampilkan</button>
+
+        </form>
+    </div>
+
+    <div class="card-section">
+        <h2>Daftar Pengeluaran</h2>
+
+        {% if data %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Pengeluaran</th>
+                        <th>Kategori</th>
+                        <th>Nominal</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data %}
+                    <tr>
+                        <td>{{ item[4] }}</td>
+                        <td>{{ item[1] }}</td>
+                        <td>{{ item[3] }}</td>
+                        <td>Rp{{ "{:,}".format(item[2]).replace(",", ".") }}</td>
+                        <td>{{ item[5] }}</td>
+                        <td>
+                            <a href="/hapus/{{ item[0] }}" class="delete-btn" onclick="return confirm('Hapus pengeluaran ini?')">Hapus</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>Belum ada pengeluaran.</p>
+        {% endif %}
+    </div>
 
 </body>
 
