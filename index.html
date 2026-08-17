@@ -3,127 +3,788 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CatatUang</title>
+
+    <title>CatatUang - Pencatat Pengeluaran</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f8;
+            color: #222;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        header {
+            background: #2563eb;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin-bottom: 8px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-tambah {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-tambah:hover {
+            background: #1d4ed8;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-box {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .summary-box h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .summary-box p {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+        }
+
+        .hapus {
+            background: #dc2626;
+            color: white;
+            padding: 8px 12px;
+            width: auto;
+        }
+
+        .hapus:hover {
+            background: #b91c1c;
+        }
+
+        .kosong {
+            text-align: center;
+            padding: 25px;
+            color: #777;
+        }
+
+        .filter {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .reset {
+            background: #64748b;
+            color: white;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            .filter {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 20px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <h1>💰 CatatUang</h1>
-    <p>Catat dan pantau pengeluaranmu.</p>
-    <hr>
 
-    <h2>Ringkasan Pengeluaran</h2>
+<div class="container">
 
-    <p>Hari Ini:
-        <strong>Rp{{ "{:,}".format(total_hari).replace(",", ".") }}</strong>
-    </p>
-    <p>Minggu Ini:
-        <strong>Rp{{ "{:,}".format(total_minggu).replace(",", ".") }}</strong>
-    </p>
-    <p>Bulan Ini:
-        <strong>Rp{{ "{:,}".format(total_bulan).replace(",", ".") }}</strong>
-    </p>
-    <p>Tahun Ini:
-        <strong>Rp{{ "{:,}".format(total_tahun).replace(",", ".") }}</strong>
-    </p>
+    <header>
+        <h1>💰 CatatUang</h1>
+        <p>Web sederhana untuk mencatat dan memantau pengeluaran.</p>
+    </header>
 
-    <hr>
+    <!-- RINGKASAN -->
+    <div class="summary">
 
-    <h2>Tambah Pengeluaran</h2>
+        <div class="summary-box">
+            <h3>Pengeluaran Minggu Ini</h3>
+            <p id="totalMinggu">Rp0</p>
+        </div>
 
-    <form action="/tambah" method="POST">
-        <label>Nama Pengeluaran</label><br>
-        <input type="text" name="nama" placeholder="Contoh: Makan siang" required>
-        <br><br>
+        <div class="summary-box">
+            <h3>Pengeluaran Bulan Ini</h3>
+            <p id="totalBulan">Rp0</p>
+        </div>
 
-        <label>Nominal</label><br>
-        <input type="number" name="nominal" placeholder="Contoh: 15000" min="1" required>
-        <br><br>
+        <div class="summary-box">
+            <h3>Pengeluaran Tahun Ini</h3>
+            <p id="totalTahun">Rp0</p>
+        </div>
 
-        <label>Kategori</label><br>
-        <select name="kategori" required>
-            <option value="Makanan">Makanan</option>
-            <option value="Transportasi">Transportasi</option>
-            <option value="Pendidikan">Pendidikan</option>
-            <option value="Hiburan">Hiburan</option>
-            <option value="Kebutuhan">Kebutuhan</option>
-            <option value="Lainnya">Lainnya</option>
-        </select>
-        <br><br>
+    </div>
 
-        <label>Tanggal</label><br>
-        <input type="date" name="tanggal" required>
-        <br><br>
+    <!-- FORM TAMBAH -->
+    <div class="card">
 
-        <label>Keterangan</label><br>
-        <textarea name="keterangan" placeholder="Keterangan tambahan"></textarea>
-        <br><br>
+        <h2 style="margin-bottom: 15px;">Tambah Pengeluaran</h2>
 
-        <button type="submit">+ Tambah Pengeluaran</button>
-    </form>
+        <form id="formPengeluaran">
 
-    <hr>
+            <div class="form-group">
+                <label for="tanggal">Tanggal</label>
+                <input type="date" id="tanggal" required>
+            </div>
 
-    <h2>Filter Pengeluaran</h2>
+            <div class="form-group">
+                <label for="keterangan">Keterangan</label>
+                <input
+                    type="text"
+                    id="keterangan"
+                    placeholder="Contoh: Makan siang"
+                    required
+                >
+            </div>
 
-    <form method="GET">
-        <label>Periode</label><br>
-        <select name="periode">
-            <option value="semua">Semua</option>
-            <option value="hari">Hari Ini</option>
-            <option value="minggu">Minggu Ini</option>
-            <option value="bulan">Bulan Ini</option>
-            <option value="tahun">Tahun Ini</option>
-        </select>
-        <br><br>
+            <div class="form-group">
+                <label for="kategori">Kategori</label>
 
-        <label>Kategori</label><br>
-        <select name="kategori">
-            <option value="Semua">Semua</option>
-            <option value="Makanan">Makanan</option>
-            <option value="Transportasi">Transportasi</option>
-            <option value="Pendidikan">Pendidikan</option>
-            <option value="Hiburan">Hiburan</option>
-            <option value="Kebutuhan">Kebutuhan</option>
-            <option value="Lainnya">Lainnya</option>
-        </select>
-        <br><br>
+                <select id="kategori" required>
+                    <option value="">-- Pilih kategori --</option>
+                    <option value="Makanan">Makanan</option>
+                    <option value="Transportasi">Transportasi</option>
+                    <option value="Belanja">Belanja</option>
+                    <option value="Pendidikan">Pendidikan</option>
+                    <option value="Hiburan">Hiburan</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
 
-        <button type="submit">Tampilkan</button>
-    </form>
+            </div>
 
-    <hr>
+            <div class="form-group">
+                <label for="jumlah">Jumlah Pengeluaran</label>
 
-    <h2>Daftar Pengeluaran</h2>
+                <input
+                    type="number"
+                    id="jumlah"
+                    placeholder="Contoh: 15000"
+                    min="1"
+                    required
+                >
 
-    {% if data %}
-    <table border="1" cellpadding="8">
-        <tr>
-            <th>Tanggal</th>
-            <th>Pengeluaran</th>
-            <th>Kategori</th>
-            <th>Nominal</th>
-            <th>Keterangan</th>
-            <th>Aksi</th>
-        </tr>
+            </div>
 
-        {% for item in data %}
-        <tr>
-            <td>{{ item[4] }}</td>
-            <td>{{ item[1] }}</td>
-            <td>{{ item[3] }}</td>
-            <td>Rp{{ "{:,}".format(item[2]).replace(",", ".") }}</td>
-            <td>{{ item[5] }}</td>
-            <td>
-                <a href="/hapus/{{ item[0] }}"
-                   onclick="return confirm('Hapus pengeluaran ini?')">
-                    Hapus
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    <p>Belum ada pengeluaran.</p>
-    {% endif %}
+            <button type="submit" class="btn-tambah">
+                + Tambah Pengeluaran
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- FILTER -->
+    <div class="card">
+
+        <h2 style="margin-bottom: 15px;">Filter Pengeluaran</h2>
+
+        <div class="filter">
+
+            <div>
+                <label for="filterKategori">Kategori</label>
+
+                <select id="filterKategori">
+                    <option value="Semua">Semua Kategori</option>
+                    <option value="Makanan">Makanan</option>
+                    <option value="Transportasi">Transportasi</option>
+                    <option value="Belanja">Belanja</option>
+                    <option value="Pendidikan">Pendidikan</option>
+                    <option value="Hiburan">Hiburan</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="filterPeriode">Periode</label>
+
+                <select id="filterPeriode">
+                    <option value="Semua">Semua</option>
+                    <option value="Minggu">Minggu Ini</option>
+                    <option value="Bulan">Bulan Ini</option>
+                    <option value="Tahun">Tahun Ini</option>
+                </select>
+
+            </div>
+
+        </div>
+
+        <button class="reset" onclick="resetFilter()">
+            Reset Filter
+        </button>
+
+    </div>
+
+    <!-- DAFTAR PENGELUARAN -->
+    <div class="card">
+
+        <h2>Daftar Pengeluaran</h2>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Keterangan</th>
+                        <th>Kategori</th>
+                        <th>Jumlah</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody id="daftarPengeluaran">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    // Mengambil data dari penyimpanan browser
+    let pengeluaran =
+        JSON.parse(localStorage.getItem("pengeluaran")) || [];
+
+
+    // Format Rupiah
+    function formatRupiah(angka) {
+
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0
+        }).format(angka);
+
+    }
+
+
+    // Mendapatkan tanggal hari ini
+    function tanggalHariIni() {
+
+        const sekarang = new Date();
+
+        const tahun = sekarang.getFullYear();
+        const bulan = String(sekarang.getMonth() + 1).padStart(2, "0");
+        const hari = String(sekarang.getDate()).padStart(2, "0");
+
+        return `${tahun}-${bulan}-${hari}`;
+
+    }
+
+
+    // Mengubah tanggal menjadi objek Date
+    function buatTanggal(tanggal) {
+
+        const bagian = tanggal.split("-");
+
+        return new Date(
+            Number(bagian[0]),
+            Number(bagian[1]) - 1,
+            Number(bagian[2])
+        );
+
+    }
+
+
+    // Mengecek apakah tanggal berada pada minggu ini
+    function mingguIni(tanggal) {
+
+        const sekarang = new Date();
+        const target = buatTanggal(tanggal);
+
+        sekarang.setHours(0, 0, 0, 0);
+        target.setHours(0, 0, 0, 0);
+
+        const hari = sekarang.getDay();
+
+        const selisihKeSenin =
+            hari === 0 ? 6 : hari - 1;
+
+        const awalMinggu = new Date(sekarang);
+
+        awalMinggu.setDate(
+            sekarang.getDate() - selisihKeSenin
+        );
+
+        awalMinggu.setHours(0, 0, 0, 0);
+
+        const akhirMinggu = new Date(awalMinggu);
+
+        akhirMinggu.setDate(
+            awalMinggu.getDate() + 6
+        );
+
+        akhirMinggu.setHours(23, 59, 59, 999);
+
+        return target >= awalMinggu &&
+               target <= akhirMinggu;
+
+    }
+
+
+    // Mengecek apakah tanggal berada pada bulan ini
+    function bulanIni(tanggal) {
+
+        const sekarang = new Date();
+        const target = buatTanggal(tanggal);
+
+        return (
+            target.getFullYear() === sekarang.getFullYear() &&
+            target.getMonth() === sekarang.getMonth()
+        );
+
+    }
+
+
+    // Mengecek apakah tanggal berada pada tahun ini
+    function tahunIni(tanggal) {
+
+        const sekarang = new Date();
+        const target = buatTanggal(tanggal);
+
+        return (
+            target.getFullYear() === sekarang.getFullYear()
+        );
+
+    }
+
+
+    // Menyimpan data
+    function simpanData() {
+
+        localStorage.setItem(
+            "pengeluaran",
+            JSON.stringify(pengeluaran)
+        );
+
+    }
+
+
+    // Menghitung total
+    function hitungTotal(filter = null) {
+
+        return pengeluaran
+            .filter(filter || (() => true))
+            .reduce(
+                (total, item) =>
+                    total + Number(item.jumlah),
+                0
+            );
+
+    }
+
+
+    // Memperbarui ringkasan
+    function updateRingkasan() {
+
+        const totalMingguan = hitungTotal(
+            item => mingguIni(item.tanggal)
+        );
+
+        const totalBulanan = hitungTotal(
+            item => bulanIni(item.tanggal)
+        );
+
+        const totalTahunan = hitungTotal(
+            item => tahunIni(item.tanggal)
+        );
+
+        document.getElementById("totalMinggu")
+            .textContent = formatRupiah(totalMingguan);
+
+        document.getElementById("totalBulan")
+            .textContent = formatRupiah(totalBulanan);
+
+        document.getElementById("totalTahun")
+            .textContent = formatRupiah(totalTahunan);
+
+    }
+
+
+    // Menampilkan daftar pengeluaran
+    function tampilkanPengeluaran() {
+
+        const tbody =
+            document.getElementById("daftarPengeluaran");
+
+        const kategori =
+            document.getElementById("filterKategori").value;
+
+        const periode =
+            document.getElementById("filterPeriode").value;
+
+
+        let hasil = [...pengeluaran];
+
+
+        // Filter kategori
+        if (kategori !== "Semua") {
+
+            hasil = hasil.filter(
+                item => item.kategori === kategori
+            );
+
+        }
+
+
+        // Filter periode
+        if (periode === "Minggu") {
+
+            hasil = hasil.filter(
+                item => mingguIni(item.tanggal)
+            );
+
+        }
+
+        if (periode === "Bulan") {
+
+            hasil = hasil.filter(
+                item => bulanIni(item.tanggal)
+            );
+
+        }
+
+        if (periode === "Tahun") {
+
+            hasil = hasil.filter(
+                item => tahunIni(item.tanggal)
+            );
+
+        }
+
+
+        // Urutkan dari terbaru
+        hasil.sort(
+            (a, b) =>
+                buatTanggal(b.tanggal) -
+                buatTanggal(a.tanggal)
+        );
+
+
+        tbody.innerHTML = "";
+
+
+        if (hasil.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="kosong">
+                        Belum ada pengeluaran.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        hasil.forEach(item => {
+
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+
+                <td>${formatTanggal(item.tanggal)}</td>
+
+                <td>${escapeHTML(item.keterangan)}</td>
+
+                <td>${escapeHTML(item.kategori)}</td>
+
+                <td>${formatRupiah(item.jumlah)}</td>
+
+                <td>
+                    <button
+                        class="hapus"
+                        onclick="hapusPengeluaran(${item.id})"
+                    >
+                        Hapus
+                    </button>
+                </td>
+
+            `;
+
+            tbody.appendChild(tr);
+
+        });
+
+    }
+
+
+    // Format tanggal Indonesia
+    function formatTanggal(tanggal) {
+
+        const date = buatTanggal(tanggal);
+
+        return date.toLocaleDateString(
+            "id-ID",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
+
+    }
+
+
+    // Mencegah teks berbahaya masuk ke HTML
+    function escapeHTML(teks) {
+
+        return teks
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+
+    // Menambah pengeluaran
+    document
+        .getElementById("formPengeluaran")
+        .addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+
+            const tanggal =
+                document.getElementById("tanggal").value;
+
+            const keterangan =
+                document.getElementById("keterangan").value.trim();
+
+            const kategori =
+                document.getElementById("kategori").value;
+
+            const jumlah =
+                Number(document.getElementById("jumlah").value);
+
+
+            if (
+                !tanggal ||
+                !keterangan ||
+                !kategori ||
+                jumlah <= 0
+            ) {
+
+                alert("Mohon isi semua data dengan benar.");
+
+                return;
+
+            }
+
+
+            const dataBaru = {
+
+                id: Date.now(),
+
+                tanggal: tanggal,
+
+                keterangan: keterangan,
+
+                kategori: kategori,
+
+                jumlah: jumlah
+
+            };
+
+
+            pengeluaran.push(dataBaru);
+
+            simpanData();
+
+            updateRingkasan();
+
+            tampilkanPengeluaran();
+
+
+            // Mengosongkan form
+            document
+                .getElementById("keterangan")
+                .value = "";
+
+            document
+                .getElementById("kategori")
+                .value = "";
+
+            document
+                .getElementById("jumlah")
+                .value = "";
+
+
+            alert("Pengeluaran berhasil ditambahkan.");
+
+        });
+
+
+    // Menghapus pengeluaran
+    function hapusPengeluaran(id) {
+
+        const yakin =
+            confirm("Hapus pengeluaran ini?");
+
+        if (!yakin) {
+            return;
+        }
+
+
+        pengeluaran =
+            pengeluaran.filter(
+                item => item.id !== id
+            );
+
+
+        simpanData();
+
+        updateRingkasan();
+
+        tampilkanPengeluaran();
+
+    }
+
+
+    // Reset filter
+    function resetFilter() {
+
+        document.getElementById("filterKategori")
+            .value = "Semua";
+
+        document.getElementById("filterPeriode")
+            .value = "Semua";
+
+        tampilkanPengeluaran();
+
+    }
+
+
+    // Saat filter berubah
+    document
+        .getElementById("filterKategori")
+        .addEventListener(
+            "change",
+            tampilkanPengeluaran
+        );
+
+
+    document
+        .getElementById("filterPeriode")
+        .addEventListener(
+            "change",
+            tampilkanPengeluaran
+        );
+
+
+    // Tanggal default hari ini
+    document.getElementById("tanggal")
+        .value = tanggalHariIni();
+
+
+    // Menampilkan data ketika website dibuka
+    updateRingkasan();
+
+    tampilkanPengeluaran();
+
+</script>
+
 </body>
 </html>
