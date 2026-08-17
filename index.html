@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatatUang</title>
+</head>
+
+<body>
+    <h1>💰 CatatUang</h1>
+    <p>Catat dan pantau pengeluaranmu.</p>
+    <hr>
+
+    <h2>Ringkasan Pengeluaran</h2>
+
+    <p>Hari Ini:
+        <strong>Rp{{ "{:,}".format(total_hari).replace(",", ".") }}</strong>
+    </p>
+    <p>Minggu Ini:
+        <strong>Rp{{ "{:,}".format(total_minggu).replace(",", ".") }}</strong>
+    </p>
+    <p>Bulan Ini:
+        <strong>Rp{{ "{:,}".format(total_bulan).replace(",", ".") }}</strong>
+    </p>
+    <p>Tahun Ini:
+        <strong>Rp{{ "{:,}".format(total_tahun).replace(",", ".") }}</strong>
+    </p>
+
+    <hr>
+
+    <h2>Tambah Pengeluaran</h2>
+
+    <form action="/tambah" method="POST">
+        <label>Nama Pengeluaran</label><br>
+        <input type="text" name="nama" placeholder="Contoh: Makan siang" required>
+        <br><br>
+
+        <label>Nominal</label><br>
+        <input type="number" name="nominal" placeholder="Contoh: 15000" min="1" required>
+        <br><br>
+
+        <label>Kategori</label><br>
+        <select name="kategori" required>
+            <option value="Makanan">Makanan</option>
+            <option value="Transportasi">Transportasi</option>
+            <option value="Pendidikan">Pendidikan</option>
+            <option value="Hiburan">Hiburan</option>
+            <option value="Kebutuhan">Kebutuhan</option>
+            <option value="Lainnya">Lainnya</option>
+        </select>
+        <br><br>
+
+        <label>Tanggal</label><br>
+        <input type="date" name="tanggal" required>
+        <br><br>
+
+        <label>Keterangan</label><br>
+        <textarea name="keterangan" placeholder="Keterangan tambahan"></textarea>
+        <br><br>
+
+        <button type="submit">+ Tambah Pengeluaran</button>
+    </form>
+
+    <hr>
+
+    <h2>Filter Pengeluaran</h2>
+
+    <form method="GET">
+        <label>Periode</label><br>
+        <select name="periode">
+            <option value="semua">Semua</option>
+            <option value="hari">Hari Ini</option>
+            <option value="minggu">Minggu Ini</option>
+            <option value="bulan">Bulan Ini</option>
+            <option value="tahun">Tahun Ini</option>
+        </select>
+        <br><br>
+
+        <label>Kategori</label><br>
+        <select name="kategori">
+            <option value="Semua">Semua</option>
+            <option value="Makanan">Makanan</option>
+            <option value="Transportasi">Transportasi</option>
+            <option value="Pendidikan">Pendidikan</option>
+            <option value="Hiburan">Hiburan</option>
+            <option value="Kebutuhan">Kebutuhan</option>
+            <option value="Lainnya">Lainnya</option>
+        </select>
+        <br><br>
+
+        <button type="submit">Tampilkan</button>
+    </form>
+
+    <hr>
+
+    <h2>Daftar Pengeluaran</h2>
+
+    {% if data %}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Tanggal</th>
+            <th>Pengeluaran</th>
+            <th>Kategori</th>
+            <th>Nominal</th>
+            <th>Keterangan</th>
+            <th>Aksi</th>
+        </tr>
+
+        {% for item in data %}
+        <tr>
+            <td>{{ item[4] }}</td>
+            <td>{{ item[1] }}</td>
+            <td>{{ item[3] }}</td>
+            <td>Rp{{ "{:,}".format(item[2]).replace(",", ".") }}</td>
+            <td>{{ item[5] }}</td>
+            <td>
+                <a href="/hapus/{{ item[0] }}"
+                   onclick="return confirm('Hapus pengeluaran ini?')">
+                    Hapus
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>Belum ada pengeluaran.</p>
+    {% endif %}
+</body>
+</html>
